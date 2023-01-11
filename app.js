@@ -21,12 +21,18 @@ function Book(title, author, pages, status){
     this.pages = pages;
     this.status = status;
 }
+
+// get readStatus true false value
+function bookReadStatus(){
+    return readStatusInput.checked === true ? "Read" : "Not read";
+}
+
 // get info of book from the user
 function addBookToLibrary(){
     const title = titleInput.value;
     const author = authorInput.value;
     const pages = pagesInput.value;
-    const status = prompt("Enter");
+    const status = bookReadStatus();
     const newBook = new Book(title, author, pages, status)
     added(newBook);// calling constructor 
 }
@@ -110,6 +116,7 @@ function submitNewBook(e){
     titleInput.value = "";
     authorInput.value="";
     pagesInput.value="";
+    readStatusInput.checked = false;
 
     container.removeChild(addBook);
     container.style.display = null;
