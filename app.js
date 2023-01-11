@@ -72,8 +72,23 @@ function added(newBook){
 
 // get info of book from the user
 function addBookToLibrary(){
-    const title = titleInput.value;
-    const author = authorInput.value;
+    // uppercases every first lettter of each word of the value taken and lowercases other
+    const titleFull = titleInput.value;
+    const titleFullSplit = titleFull.split(" ");
+    const finalTitle = [];
+    for(let k=0;k<titleFullSplit.length;k++){
+        finalTitle[k] = titleFullSplit[k][0].toUpperCase() + titleFullSplit[k].substr(1).toLowerCase();
+    }
+    const title = finalTitle.join(" "); 
+    // uppercases every first lettter of each word of the value taken and lowercases other
+    const authorFull = authorInput.value;
+    const authorFullSplit = authorFull.split(" ");
+    const finalAuthor = [];
+    for(let j=0;j<authorFullSplit.length;j++){
+        finalAuthor[j] = authorFullSplit[j][0].toUpperCase() + authorFullSplit[j].substr(1).toLowerCase();
+    }
+    const author = finalAuthor.join(" ");
+
     const pages = pagesInput.value;
     const status = bookReadStatus();
     const newBook = new Book(title, author, pages, status);
