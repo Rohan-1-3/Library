@@ -1,4 +1,4 @@
-let myLibrary = [];
+const myLibrary = [];
 let i=0;
 
 const mainContent = document.querySelector(".main-content")
@@ -52,14 +52,11 @@ function added(newBook){
     pages.textContent= `Pages: ${newBook.pages}`
     readStatus.textContent= `Status: ${newBook.status}`
     readStatusCheckbox.checked = readStatusInput.checked;
+    removeButton.textContent = "Remove";
 
     // changes read status accordingly to user
-    readStatusCheckbox.addEventListener("click", ()=>{
-        return readStatusCheckbox.checked === true ? readStatus.textContent = `Status: Read`
-        : readStatus.textContent = "Status: Not Read";
-    })
-
-    removeButton.textContent = "Remove";
+    readStatusCheckbox.addEventListener("click", ()=>readStatusCheckbox.checked === true ? readStatus.textContent = "Status: Read"
+        : readStatus.textContent = "Status: Not Read")
 
     // inserting the book info container into the HTML file
     mainContent.appendChild(newDiv);
@@ -125,6 +122,7 @@ function add(){
     addBookForm.appendChild(bookAddSubmit);
     addBookForm.appendChild(bookAddCancel);
     
+    titleInput.focus();
     addButton.disabled = true;// disabling the addBook button
 }
 
@@ -142,35 +140,45 @@ function resetInputContainer(){
     addButton.disabled = false;// enables back the addBook
 }
 
+function removeDiv(){// remove the respective parent of the remove button selected
+    const removeButton = document.querySelectorAll(".remove-button")
+    removeButton.forEach((remove)=>{
+        remove.addEventListener("click", ()=>{
+            ((remove.parentNode).parentNode).removeChild(remove.parentNode);
+        })
+    })
+}
+
 function checkInputValues(){
     if(titleInput.value === ""){
-        alert("help");
-        titleInput.style.border = "2px solid red";
         titleInput.focus();
         return false;
     }
-    else if(authorInput.value === ""){
-        alert("help");
+    titleInput.style.border = "0px";
+    if (authorInput.value === ""){
         authorInput.focus();
         return false;
     }
-
-    else if(pagesInput.value === ""){
-        alert("help");
+    authorInput.style.border = "0px"
+    if(pagesInput.value === ""){
         pagesInput.focus();
         return false;
     }
+    pagesInput.style.border = "0px"
     addBookToLibrary();
     resetInputContainer();
+    return 0;
 }
 
 function submitNewBook(e){
     e.preventDefault(); // preventing form from submitting
     checkInputValues();
+    removeDiv();
 }
+
 // pressing the submit button removes the bookInputContainer from HTML file
 bookAddSubmit.addEventListener("click", submitNewBook)
 
-//
+// resets back the grid to full page
 bookAddCancel.addEventListener("click", resetInputContainer);
 addButton.addEventListener("click", add);// adds new section for adding book
