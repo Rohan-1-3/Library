@@ -2,6 +2,7 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    font-family: 'Roboto';
 }
 
 #container{
@@ -21,6 +22,10 @@ header h1, header button{
     margin: 1vw;
 }
 
+header h1{
+    font-size: 5vw;
+}
+
 header button, main button{
     width: 15vw;
     height: 5vw;
@@ -29,6 +34,7 @@ header button, main button{
     font-size: 2vw;
     border-width: 0px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 main button{
@@ -56,17 +62,45 @@ footer{
 
 .main-content{
     display: grid;
-    grid-template-rows: repeat(auto-fit, minmax(200px,250px));
+    grid-template-rows: repeat(auto-fit, minmax(100px,260px));
     grid-template-columns: repeat(auto-fit, minmax(400px, 400px));
     gap: 15px;
     margin: 1vh;
 }
 
 .book-item{
-    background-color: aquamarine;
-    font-size: 2.5vw;
+    background-color: rgba(32, 46, 84, 0.66);
+    font-size: 2.3vw;
     padding: 3vh;
     border-radius: 20px;
+}
+
+.book-item input[type=checkbox]{
+    position: relative;
+    left: 18vw;
+    bottom: 2.5vw;
+    accent-color: green;
+    width: 10%;
+    height: 10%;
+}
+
+form button{
+    margin: 1vw;
+    width: 100%;
+    height: 4vw;
+    font-size: 2vw;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.book-input-submit{
+    background-color: green;
+}
+
+.book-input-cancel{
+    background-color: rgba(255, 0, 0, 0.826);
 }
 
 input{
@@ -80,6 +114,11 @@ form{
     padding-right: 2vw;
 }
 
+.book-input{
+    background-color: rgba(0, 0, 0, 0.838);
+    box-shadow: -1px 2px 8px black, -1px 4px 8px grey, 15px 2px 8px black; ;
+}
+
 form input{
     width: 100%;
     height: 7vh;
@@ -91,6 +130,7 @@ form input{
 
 form label{
     padding-left: 1vw;
+    color: white;
 }
 
 form input:focus{
@@ -101,4 +141,9 @@ form input[type=checkbox]{
     position: relative;
     right: 7vw;
     height: 4vh;
+}
+
+::placeholder { 
+    color: red;
+    font-size: 1.5vw;
 }

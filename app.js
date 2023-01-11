@@ -55,8 +55,10 @@ function added(newBook){
     removeButton.textContent = "Remove";
 
     // changes read status accordingly to user
-    readStatusCheckbox.addEventListener("click", ()=>readStatusCheckbox.checked === true ? readStatus.textContent = "Status: Read"
-        : readStatus.textContent = "Status: Not Read")
+    readStatusCheckbox.addEventListener("click", ()=>{
+        return readStatusCheckbox.checked === true 
+        ? readStatus.textContent = "Status: Read"
+        : readStatus.textContent = "Status: Not Read"})
 
     // inserting the book info container into the HTML file
     mainContent.appendChild(newDiv);
@@ -78,7 +80,6 @@ function addBookToLibrary(){
     myLibrary[i]=newBook;
     i+=1;
     added(newBook);// calling constructor 
-    console.log(myLibrary);
 }
 
 
@@ -87,7 +88,6 @@ function add(){
     // setting CSS grid for main content and bookInputContainer
     container.style.display = "grid";
     container.style.gridTemplateColumns = "8fr 2fr";
-    container.style.backgroundColor = "green";
 
 
     // setting textContent for label
@@ -106,7 +106,8 @@ function add(){
     pagesInput.classList.add("pages-input");
     pagesInput.type = "number"
     readStatusInput.type = "checkbox";
-    bookAddSubmit.classList.add("book-input-button");
+    bookAddSubmit.classList.add("book-input-submit");
+    bookAddCancel.classList.add("book-input-cancel");
 
     // inserting all the elements of bookInputContainer into HTML file
     container.appendChild(addBook);// creates a grid container for bookInputContainer in HTML file
@@ -131,6 +132,9 @@ function resetInputContainer(){
     titleInput.value = "";
     authorInput.value="";
     pagesInput.value="";
+    titleInput.placeholder = "";
+    authorInput.placeholder = "";
+    pagesInput.placeholder = "";
     readStatusInput.checked = false;
 
     container.removeChild(addBook);
@@ -151,16 +155,19 @@ function removeDiv(){// remove the respective parent of the remove button select
 
 function checkInputValues(){
     if(titleInput.value === ""){
+        titleInput.placeholder = "Enter Book Title!"
         titleInput.focus();
         return false;
     }
     titleInput.style.border = "0px";
     if (authorInput.value === ""){
+        authorInput.placeholder = "Enter Book Author!"
         authorInput.focus();
         return false;
     }
     authorInput.style.border = "0px"
     if(pagesInput.value === ""){
+        pagesInput.placeholder = "Enter number of Pages"
         pagesInput.focus();
         return false;
     }
