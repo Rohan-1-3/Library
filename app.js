@@ -197,7 +197,7 @@ function checkBookAlreadyExists(){
             errorPara.textContent = "YOU ALREADY HAVE THAT BOOK IN LIBRARY";
             setInterval(()=>{
                 errorPara.textContent = ""
-            },3000);
+            },5000);
             resetInputContainer();
             return false;
         }
