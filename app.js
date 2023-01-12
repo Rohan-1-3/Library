@@ -161,11 +161,28 @@ function resetInputContainer(){
     addButton.disabled = false;// enables back the addBook button
 }
 
+function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibrary
+    let h =0 ;
+    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
+    for(h=0;h<myLibrary.length;h++){
+        if(removedBookTitle.toLowerCase() === myLibraryTitle[h].toLowerCase()){
+            myLibrary[h].title = "";
+        }
+    }
+    return 0;
+}
+
 function removeDiv(){// remove the respective parent of the remove button selected
     const removeButton = document.querySelectorAll(".remove-button")
     removeButton.forEach((remove)=>{
         remove.addEventListener("click", ()=>{
             ((remove.parentNode).parentNode).removeChild(remove.parentNode);
+
+            // puts removed book title in array and joins back to string
+            const removedBookTitleArray = remove.parentNode.firstChild.textContent.split(" ");
+            removedBookTitleArray.shift();// array
+            const removedBookTitle = removedBookTitleArray.join(" ");// string
+            deleteBookFromMyLibrary(removedBookTitle);
         })
     })
 }
@@ -175,7 +192,6 @@ function checkBookAlreadyExists(){
     let m=0;
     const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
     for (m=0; m<myLibrary.length;m++){
-        console.log(myLibraryTitle[m]);
         if(titleInput.value.toLowerCase() === myLibraryTitle[m].toLowerCase()){
             errorPara.style.color = "red";
             errorPara.textContent = "YOU ALREADY HAVE THAT BOOK IN LIBRARY";
