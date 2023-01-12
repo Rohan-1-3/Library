@@ -3,6 +3,7 @@ let i=0;
 
 const mainContent = document.querySelector(".main-content")
 const container = document.getElementById("main-container");
+const errorPara = document.querySelector(".error-para");
 // adding elements for bookInputContainer
 const addBook = document.createElement("div");
 const addBookForm = document.createElement("form");
@@ -92,8 +93,9 @@ function addBookToLibrary(){
     const pages = pagesInput.value;
     const status = bookReadStatus();
     const newBook = new Book(title, author, pages, status);
-    myLibrary[i]=newBook;
+    myLibrary[i] = newBook;
     i+=1;
+    console.log(myLibrary);
     added(newBook);// calling constructor 
 }
 
@@ -156,7 +158,7 @@ function resetInputContainer(){
     container.style.display = null;
     container.style.gridTemplateColumns = null;
     container.style.backgroundColor = null;
-    addButton.disabled = false;// enables back the addBook
+    addButton.disabled = false;// enables back the addBook button
 }
 
 function removeDiv(){// remove the respective parent of the remove button selected
@@ -166,6 +168,27 @@ function removeDiv(){// remove the respective parent of the remove button select
             ((remove.parentNode).parentNode).removeChild(remove.parentNode);
         })
     })
+}
+
+// checking if the book already exists in the users library
+function checkBookAlreadyExists(){
+    let m=0;
+    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
+    for (m=0; m<myLibrary.length;m++){
+        console.log(myLibraryTitle[m]);
+        if(titleInput.value.toLowerCase() === myLibraryTitle[m].toLowerCase()){
+            errorPara.style.color = "red";
+            errorPara.textContent = "YOU ALREADY HAVE THAT BOOK IN LIBRARY";
+            setInterval(()=>{
+                errorPara.textContent = ""
+            },3000);
+            resetInputContainer();
+            return false;
+        }
+    }
+    addBookToLibrary();
+    resetInputContainer();
+    return 0;
 }
 
 function checkInputValues(){
@@ -187,8 +210,7 @@ function checkInputValues(){
         return false;
     }
     pagesInput.style.border = "0px"
-    addBookToLibrary();
-    resetInputContainer();
+    checkBookAlreadyExists();
     return 0;
 }
 
