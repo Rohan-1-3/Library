@@ -95,7 +95,6 @@ function addBookToLibrary(){
     const newBook = new Book(title, author, pages, status);
     myLibrary[i] = newBook;
     i+=1;
-    console.log(myLibrary);
     added(newBook);// calling constructor 
 }
 
@@ -142,6 +141,8 @@ function add(){
     
     titleInput.focus();
     addButton.disabled = true;// disabling the addBook button
+
+    addButton.classList.add("header");
 }
 
 function resetInputContainer(){
@@ -159,6 +160,8 @@ function resetInputContainer(){
     container.style.gridTemplateColumns = null;
     container.style.backgroundColor = null;
     addButton.disabled = false;// enables back the addBook button
+
+    addButton.classList.remove("header")
 }
 
 function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibrary
@@ -166,7 +169,8 @@ function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibra
     const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
     for(h=0;h<myLibrary.length;h++){
         if(removedBookTitle.toLowerCase() === myLibraryTitle[h].toLowerCase()){
-            myLibrary[h].title = "";
+            myLibrary.splice(h,1);
+            i-=1;
         }
     }
     return 0;
