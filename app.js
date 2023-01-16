@@ -19,12 +19,53 @@ const bookAddSubmit = document.createElement("button");
 const bookAddCancel = document.createElement("button");
 const addButton = document.querySelector(".add-book");// getting the add button
 
-// Constructor for getting info on book
-function Book(title, author, pages, status){
+const Book = class{
+    // Constructor for getting info on book
+    constructor (title, author, pages, status){
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.status = status;
+    }
+
+    added(){
+        // creating container for holding book infos
+        const newDiv = document.createElement("div");
+        const title= document.createElement("p");
+        const author= document.createElement("p");
+        const pages= document.createElement("p");
+        const readStatus= document.createElement("p")
+        const readStatusCheckbox = document.createElement("input");
+        const removeButton = document.createElement("button");
+    
+        // Adding class for the contianer info
+        newDiv.classList.add("book-item");
+        removeButton.classList.add("remove-button");
+        readStatusCheckbox.type = "checkbox";
+    
+        // calling constructor value and inserting in book info
+        title.textContent= `Title: ${this.title}`
+        author.textContent= `Author: ${this.author}`
+        pages.textContent= `Pages: ${this.pages}`
+        readStatus.textContent= `Status: ${this.status}`
+        readStatusCheckbox.checked = readStatusInput.checked;
+        removeButton.textContent = "Remove";
+    
+        // changes read status accordingly to user
+        readStatusCheckbox.addEventListener("click", ()=>{
+            return readStatusCheckbox.checked === true 
+            ? readStatus.textContent = "Status: Read"
+            : readStatus.textContent = "Status: Not Read"})
+    
+        // inserting the book info container into the HTML file
+        mainContent.appendChild(newDiv);
+        newDiv.appendChild(title);
+        newDiv.appendChild(author);
+        newDiv.appendChild(pages);
+        newDiv.appendChild(readStatus);
+        newDiv.appendChild(readStatusCheckbox);
+        newDiv.appendChild(removeButton);
+    }
 }
 
 // get readStatus true false value
@@ -32,52 +73,39 @@ function bookReadStatus(){
     return readStatusInput.checked === true ? "Read" : "Not read";
 }
 
-function added(newBook){
-    // creating container for holding book infos
-    const newDiv = document.createElement("div");
-    const title= document.createElement("p");
-    const author= document.createElement("p");
-    const pages= document.createElement("p");
-    const readStatus= document.createElement("p")
-    const readStatusCheckbox = document.createElement("input");
-    const removeButton = document.createElement("button");
-
-    // Adding class for the contianer info
-    newDiv.classList.add("book-item");
-    removeButton.classList.add("remove-button");
-    readStatusCheckbox.type = "checkbox";
-
-    // calling constructor value and inserting in book info
-    title.textContent= `Title: ${newBook.title}`
-    author.textContent= `Author: ${newBook.author}`
-    pages.textContent= `Pages: ${newBook.pages}`
-    readStatus.textContent= `Status: ${newBook.status}`
-    readStatusCheckbox.checked = readStatusInput.checked;
-    removeButton.textContent = "Remove";
-
-    // changes read status accordingly to user
-    readStatusCheckbox.addEventListener("click", ()=>{
-        return readStatusCheckbox.checked === true 
-        ? readStatus.textContent = "Status: Read"
-        : readStatus.textContent = "Status: Not Read"})
-
-    // inserting the book info container into the HTML file
-    mainContent.appendChild(newDiv);
-    newDiv.appendChild(title);
-    newDiv.appendChild(author);
-    newDiv.appendChild(pages);
-    newDiv.appendChild(readStatus);
-    newDiv.appendChild(readStatusCheckbox);
-    newDiv.appendChild(removeButton);
+function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibrary
+    let h =0 ;
+    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title); // stores the title of all book in 1 array
+    for(h=0;h<myLibrary.length;h+=1){ // loops over every element to find the removed title
+        if(removedBookTitle.toLowerCase() === myLibraryTitle[h].toLowerCase()){
+            myLibrary.splice(h,1);
+            i-=1;
+        }
+    }
+    return 0;
 }
 
+function removeDiv(){// remove the respective parent of the remove button selected
+    const removeButton = document.querySelectorAll(".remove-button")
+    removeButton.forEach((remove)=>{
+        remove.addEventListener("click", ()=>{
+            ((remove.parentNode).parentNode).removeChild(remove.parentNode);
+
+            // puts removed book title in array and joins back to string
+            const removedBookTitleArray = remove.parentNode.firstChild.textContent.split(" ");
+            removedBookTitleArray.shift();// array
+            const removedBookTitle = removedBookTitleArray.join(" ");// string
+            deleteBookFromMyLibrary(removedBookTitle);
+        })
+    })
+}
 // get info of book from the user
 function addBookToLibrary(){
     // uppercases every first lettter of each word of the value taken and lowercases other
     const titleFull = titleInput.value;
     const titleFullSplit = titleFull.split(" ");
     const finalTitle = [];
-    for(let k=0;k<titleFullSplit.length;k++){
+    for(let k=0;k<titleFullSplit.length;k+=1){
         finalTitle[k] = titleFullSplit[k][0].toUpperCase() + titleFullSplit[k].substr(1).toLowerCase();
     }
     const title = finalTitle.join(" "); 
@@ -85,7 +113,7 @@ function addBookToLibrary(){
     const authorFull = authorInput.value;
     const authorFullSplit = authorFull.split(" ");
     const finalAuthor = [];
-    for(let j=0;j<authorFullSplit.length;j++){
+    for(let j=0;j<authorFullSplit.length;j+=1){
         finalAuthor[j] = authorFullSplit[j][0].toUpperCase() + authorFullSplit[j].substr(1).toLowerCase();
     }
     const author = finalAuthor.join(" ");
@@ -95,9 +123,76 @@ function addBookToLibrary(){
     const newBook = new Book(title, author, pages, status);
     myLibrary[i] = newBook;
     i+=1;
-    added(newBook);// calling constructor 
+    newBook.added();// calling constructor 
 }
 
+function resetInputContainer(){
+    // resets the value to null for further adding 
+    titleInput.value = "";
+    authorInput.value="";
+    pagesInput.value="";
+    titleInput.placeholder = "";
+    authorInput.placeholder = "";
+    pagesInput.placeholder = "";
+    readStatusInput.checked = false;
+
+    container.removeChild(addBook);
+    container.style.display = null;
+    container.style.gridTemplateColumns = null;
+    container.style.backgroundColor = null;
+    addButton.disabled = false;// enables back the addBook button
+
+    addButton.classList.remove("header")
+}
+
+// checking if the book already exists in the users library
+function checkBookAlreadyExists(){
+    let m=0;
+    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
+    for (m=0; m<myLibrary.length;m+=1){
+        if(titleInput.value.toLowerCase() === myLibraryTitle[m].toLowerCase()){
+            errorPara.style.color = "red";
+            errorPara.textContent = "YOU ALREADY HAVE THAT BOOK IN LIBRARY";
+            setInterval(()=>{
+                errorPara.textContent = ""
+            },3000);
+            resetInputContainer();
+            return false;
+        }
+    }
+    addBookToLibrary();
+    resetInputContainer();
+    return 0;
+}
+
+function checkInputValues(){
+    if(titleInput.value === ""){
+        titleInput.placeholder = "Enter Book Title!"
+        titleInput.focus();
+        return false;
+    }
+    titleInput.style.border = "0px";
+    if (authorInput.value === ""){
+        authorInput.placeholder = "Enter Book Author!"
+        authorInput.focus();
+        return false;
+    }
+    authorInput.style.border = "0px";
+    if(pagesInput.value === ""){
+        pagesInput.placeholder = "Enter number of Pages"
+        pagesInput.focus();
+        return false;
+    }
+    pagesInput.style.border = "0px"
+    checkBookAlreadyExists();
+    return 0;
+}
+
+function submitNewBook(e){
+    e.preventDefault(); // preventing form from submitting
+    checkInputValues();
+    removeDiv();
+}
 
 function add(){
 
@@ -145,104 +240,10 @@ function add(){
     addButton.classList.add("header");
 }
 
-function resetInputContainer(){
-    // resets the value to null for further adding 
-    titleInput.value = "";
-    authorInput.value="";
-    pagesInput.value="";
-    titleInput.placeholder = "";
-    authorInput.placeholder = "";
-    pagesInput.placeholder = "";
-    readStatusInput.checked = false;
-
-    container.removeChild(addBook);
-    container.style.display = null;
-    container.style.gridTemplateColumns = null;
-    container.style.backgroundColor = null;
-    addButton.disabled = false;// enables back the addBook button
-
-    addButton.classList.remove("header")
-}
-
-function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibrary
-    let h =0 ;
-    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
-    for(h=0;h<myLibrary.length;h++){
-        if(removedBookTitle.toLowerCase() === myLibraryTitle[h].toLowerCase()){
-            myLibrary.splice(h,1);
-            i-=1;
-        }
-    }
-    return 0;
-}
-
-function removeDiv(){// remove the respective parent of the remove button selected
-    const removeButton = document.querySelectorAll(".remove-button")
-    removeButton.forEach((remove)=>{
-        remove.addEventListener("click", ()=>{
-            ((remove.parentNode).parentNode).removeChild(remove.parentNode);
-
-            // puts removed book title in array and joins back to string
-            const removedBookTitleArray = remove.parentNode.firstChild.textContent.split(" ");
-            removedBookTitleArray.shift();// array
-            const removedBookTitle = removedBookTitleArray.join(" ");// string
-            deleteBookFromMyLibrary(removedBookTitle);
-        })
-    })
-}
-
-// checking if the book already exists in the users library
-function checkBookAlreadyExists(){
-    let m=0;
-    const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title);
-    for (m=0; m<myLibrary.length;m++){
-        if(titleInput.value.toLowerCase() === myLibraryTitle[m].toLowerCase()){
-            errorPara.style.color = "red";
-            errorPara.textContent = "YOU ALREADY HAVE THAT BOOK IN LIBRARY";
-            setInterval(()=>{
-                errorPara.textContent = ""
-            },5000);
-            resetInputContainer();
-            return false;
-        }
-    }
-    addBookToLibrary();
-    resetInputContainer();
-    return 0;
-}
-
-function checkInputValues(){
-    if(titleInput.value === ""){
-        titleInput.placeholder = "Enter Book Title!"
-        titleInput.focus();
-        return false;
-    }
-    titleInput.style.border = "0px";
-    if (authorInput.value === ""){
-        authorInput.placeholder = "Enter Book Author!"
-        authorInput.focus();
-        return false;
-    }
-    authorInput.style.border = "0px"
-    if(pagesInput.value === ""){
-        pagesInput.placeholder = "Enter number of Pages"
-        pagesInput.focus();
-        return false;
-    }
-    pagesInput.style.border = "0px"
-    checkBookAlreadyExists();
-    return 0;
-}
-
-function submitNewBook(e){
-    e.preventDefault(); // preventing form from submitting
-    checkInputValues();
-    removeDiv();
-}
+addButton.addEventListener("click", add);// adds new section for adding book
 
 // pressing the submit button removes the bookInputContainer from HTML file
 bookAddSubmit.addEventListener("click", submitNewBook)
 
 // resets back the grid to full page
 bookAddCancel.addEventListener("click", resetInputContainer);
-addButton.addEventListener("click", add);// adds new section for adding book
