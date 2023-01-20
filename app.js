@@ -42,6 +42,7 @@ const Book = class{
         const removeButton = document.createElement('button');
         const readStatusCheckbox = document.createElement('input');
         readStatusCheckbox.type = 'checkbox'; 
+        readStatusCheckbox.classList.add('read-status');
     
         // Adding class for the contianer info
         newDiv.classList.add('book-item');
@@ -71,6 +72,7 @@ const Book = class{
         newDiv.appendChild(readStatus);
         newDiv.appendChild(readStatusCheckbox);
         newDiv.appendChild(removeButton);
+        
     }
 }
 
@@ -100,7 +102,7 @@ function deleteBookFromMyLibrary(removedBookTitle){ // removes book from myLibra
 }
 
 function removeDiv(){// remove the respective parent of the remove button selected
-    const removeButton = document.querySelectorAll('.remove-button')
+    const removeButton = document.querySelectorAll('.remove-button');
     removeButton.forEach((remove)=>{
         remove.addEventListener('click', ()=>{
             ((remove.parentNode).parentNode).removeChild(remove.parentNode);
@@ -109,6 +111,7 @@ function removeDiv(){// remove the respective parent of the remove button select
             const removedBookTitleArray = remove.parentNode.firstChild.textContent.split(' ');
             removedBookTitleArray.shift();// array
             const removedBookTitle = removedBookTitleArray.join(' ');// string
+            console.log(removedBookTitle)
             deleteBookFromMyLibrary(removedBookTitle);
 
         })
@@ -142,6 +145,35 @@ function addBookToLibrary(){
     newBook.added();// calling constructor 
 }
 
+
+function changeReadStatus(){
+    const readStatusInputChange = document.querySelectorAll('.read-status');
+    readStatusInputChange.forEach((readStatus)=>{
+        readStatus.addEventListener('click', ()=>{
+            // puts removed book title in array and joins back to string
+            const removedBookTitleArray = readStatus.parentNode.firstChild.textContent.split(' ');
+            removedBookTitleArray.shift();// array
+            const removedBookTitle = removedBookTitleArray.join(' ');// string
+            let h =0 ;
+            const myLibraryTitle = myLibrary.map(bookTitle => bookTitle.title); // stores the title of all book in 1 array
+            for(h=0;h<myLibrary.length;h+=1){ // loops over every element to find the removed title
+                if(removedBookTitle.toLowerCase() === myLibraryTitle[h].toLowerCase()){
+                    const changingStatus = JSON.parse(localStorage.getItem(h));
+                    if(changingStatus.status.toLowerCase() === 'read'){
+                        changingStatus.status = 'Not Read';
+                    }
+                    else if(changingStatus.status.toLowerCase() === 'not read'){
+                        changingStatus.status = 'Read';
+                    }
+                    localStorage.setItem(h,JSON.stringify(changingStatus));
+                    break;
+                }
+        }
+    return 0;
+    })
+    })
+}
+
 function addBookFromLibrary(){ // takes value from myLibrary and creates new book and appends them
     for(let j = 0;j<localStorage.length;j+=1){
         const recentBook = new Book(myLibrary[j].title,myLibrary[j].author,
@@ -149,6 +181,7 @@ function addBookFromLibrary(){ // takes value from myLibrary and creates new boo
             recentBook.added();
     }
     removeDiv();
+    changeReadStatus();
 }
 
 addBookFromLibrary();
@@ -219,6 +252,7 @@ function submitNewBook(e){
     e.preventDefault(); // preventing form from submitting
     checkInputValues();
     removeDiv();
+    changeReadStatus();
 }
 
 function add(){
